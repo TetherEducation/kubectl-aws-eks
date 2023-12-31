@@ -21,6 +21,10 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
+      - name: Set up Dockerfile path
+        id: dockerfile
+        run: echo "DOCKERFILE_PATH=${{ env.DOCKERFILE_PATH || './Dockerfile' }}" >> $GITHUB_ENV
+
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
@@ -37,7 +41,7 @@ jobs:
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: .
-          file: ./Dockerfile
+          file: ${{ env.DOCKERFILE_PATH }}
           push: true
           tags: kodermax/kubectl-aws-eks:latest
           labels: ${{ steps.meta.outputs.labels }}
